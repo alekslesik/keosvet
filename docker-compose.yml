@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  apache:
+    build:
+      context: ./docker/apache
+      dockerfile: Dockerfile
+    volumes:
+      - ./www:/usr/local/apache2/htdocs/
+      - ./storage/docker/logs/apache/:/usr/local/apache2/logs/
+    ports:
+      - "80:80"
+    # depends_on:
+    #   - php-fpm
+    networks:
+      common:
+        ipv4_address: '10.100.0.21'
+
+  # php-fpm:
+  #   build:
+  #     context: ./docker/php
+  #     dockerfile: php-fpm.docker
+  #   volumes:
+  #     - ./www:/var/www/bitrix
+  #     - ./storage/docker/logs/php/:/var/log/php/
+  #   depends_on:
+  #     - mysql
+  #   networks:
+  #     - bitrix
+  # mysql:
+  #   build:
+  #     context: ./docker/mysql
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     MYSQL_DATABASE: 'common'
+  #     MYSQL_USER: 'common'
+  #     MYSQL_PASSWORD: '486464'
+  #     MYSQL_ROOT_PASSWORD: '486464'
+  #   ports:
+  #     - "33061:3306"
+  #   networks:
+  #     - bitrix
+
+networks:
+  common:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.100.0.0/24
