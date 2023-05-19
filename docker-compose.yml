@@ -1,48 +1,34 @@
 version: '3'
 
 services:
-  apache:
+  php-apache:
     build:
-      context: ./docker/apache
+      context: ./docker/php-apache
       dockerfile: Dockerfile
     volumes:
-      - ./www:/usr/local/apache2/htdocs/
-      - ./storage/docker/logs/apache/:/usr/local/apache2/logs/
+      - ./www:/var/www/html
+      - ./docker/logs/php-apache:/usr/local/apache2/logs/
     ports:
-      - "80:80"
-    # depends_on:
-    #   - php-fpm
+      - "8080:80"
     networks:
-      common:
+      net:
         ipv4_address: '10.100.0.21'
-
-  # php-fpm:
-  #   build:
-  #     context: ./docker/php
-  #     dockerfile: php-fpm.docker
-  #   volumes:
-  #     - ./www:/var/www/bitrix
-  #     - ./storage/docker/logs/php/:/var/log/php/
-  #   depends_on:
-  #     - mysql
-  #   networks:
-  #     - bitrix
-  # mysql:
-  #   build:
-  #     context: ./docker/mysql
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     MYSQL_DATABASE: 'common'
-  #     MYSQL_USER: 'common'
-  #     MYSQL_PASSWORD: '486464'
-  #     MYSQL_ROOT_PASSWORD: '486464'
-  #   ports:
-  #     - "33061:3306"
-  #   networks:
-  #     - bitrix
+  mysql:
+    build:
+      context: ./docker/mysql
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_DATABASE: 'common'
+      MYSQL_USER: 'common'
+      MYSQL_PASSWORD: '486464'
+      MYSQL_ROOT_PASSWORD: '486464'
+    ports:
+      - "33061:3306"
+    networks:
+      - net
 
 networks:
-  common:
+  net:
     driver: bridge
     ipam:
       driver: default
