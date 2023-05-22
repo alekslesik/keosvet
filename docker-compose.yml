@@ -1,18 +1,6 @@
 version: '3'
 
 services:
-  php-apache:
-    build:
-      context: ./docker/php-apache
-      dockerfile: Dockerfile
-    volumes:
-      - ./www:/var/www/html
-      - ./docker/logs/php-apache:/usr/local/apache2/logs/
-    ports:
-      - "8080:80"
-    networks:
-      net:
-        ipv4_address: '10.100.0.21'
   mysql:
     build:
       context: ./docker/mysql
@@ -27,10 +15,44 @@ services:
     networks:
       - net
 
+  php-apache:
+    build:
+      context: ./docker/php-apache
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    depends_on: 
+      - mysql
+    volumes:
+      - ./www/local/templates:/var/www/html/local/templates
+      - ./docker/logs/php-apache:/usr/local/apache2/logs/
+    ports:
+      - "8080:80"
+    networks:
+      - net
+
+  memcached:
+    build:
+      context: ./docker/memcached
+      dockerfile: Dockerfile
+    volumes:
+      - ./docker/storage/memcached:/var/lib/memcached
+    ports:
+      - "11211"
+    depends_on:
+      - php-apache
+    networks:
+      - net
+
+  redis:
+    build:
+      context: ./docker/redis
+      dockerfile: Dockerfile
+    volumes:
+      - ./docker/storage/redis:/data
+    # ports:
+    #   - "6379"
+    networks:
+      - net
+
 networks:
   net:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.100.0.0/24

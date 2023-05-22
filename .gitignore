@@ -1,4 +1,7 @@
-www/*
 .env
-storage/
-!www/.gitkeep
+docker/storage
+docker/logs
+!www/index.php
+!www/local
+www/
+

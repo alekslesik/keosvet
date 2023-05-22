@@ -3,12 +3,12 @@ up: docker-up
 docker-up:
 	docker-compose up --build -d
 
-docker-clear:
+docker-down:
 	docker-compose down --remove-orphans
 
 bitrix-setup:
-	docker-compose exec php-fpm-cli wget http://www.1c-bitrix.ru/download/scripts/bitrixsetup.php -O bitrixsetup.php
-	make perm
+	docker-compose exec bitrix-common-php-apache-1 wget http://www.1c-bitrix.ru/download/scripts/bitrixsetup.php -O bitrixsetup.php
+	# make perm
 
 bitrix-restore-download:
 	docker-compose exec php-fpm-cli wget $(url)
