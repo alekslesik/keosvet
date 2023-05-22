@@ -1,7 +1,5 @@
 .env
-docker/storage
-docker/logs
-!www/index.php
-!www/local
-www/
-
+/docker/storage
+/docker/logs
+/www/*
+!/www/local
