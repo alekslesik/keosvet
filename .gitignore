@@ -1,5 +1,4 @@
 .env
 /docker/storage
 /docker/logs
-/www/*
 !/www/local
