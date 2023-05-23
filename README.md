@@ -66,3 +66,4 @@ docker-compose up --build -d
 #### TODO Сделать volume для  mysql
 #### TODO Сделать настройку deploy
 #### TODO Сделать настройку xdebug
+#### TODO Сделать загрузку restore.php внутри контейнера через Makefile
