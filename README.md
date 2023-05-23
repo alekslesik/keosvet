@@ -13,7 +13,7 @@ git clone https://github.com/alekslesik/bitrix-docker
 
 ## Установка bitrix
 
-Создать и заполнить файл `.env` (пример .env.example)
+Создать и заполнить файл `.env` (пример .env.example). ВСЕ ПОЛЯ ОБЯЗАТЕЛЬНЫ
 
 <!-- TODO сделать -->
 ### Установка через `bitrixsetup.php`
