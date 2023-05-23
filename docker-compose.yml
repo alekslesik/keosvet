@@ -5,11 +5,16 @@ services:
     build:
       context: ./docker/mysql
       dockerfile: Dockerfile
+    image: bitrix-mysql
+    container_name: bitrix-mysql
+    restart: "always"
+    volumes:
+      - ./settings/my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
-      MYSQL_DATABASE: 'common'
-      MYSQL_USER: 'common'
-      MYSQL_PASSWORD: '486464'
-      MYSQL_ROOT_PASSWORD: '486464'
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "33061:3306"
     networks:
@@ -17,16 +22,29 @@ services:
 
   php-apache:
     build:
-      context: ./docker/php-apache
+      context: .
       dockerfile: Dockerfile
     working_dir: /var/www/html
-    depends_on: 
-      - mysql
+    image: bitrix-php-apache
+    container_name: bitrix-php-apache
+    restart: "always"
+    # depends_on: 
+    #   - mysql
     volumes:
-      - ./www/local/templates:/var/www/html/local/templates
-      - ./docker/logs/php-apache:/usr/local/apache2/logs/
+      - type: bind
+        source: ./settings/httpd.conf
+        target: /usr/local/apache2/conf/httpd.conf
+      - type: bind
+        source: ./settings/php.ini
+        target: /usr/local/etc/php/conf.d/php.ini
+      - type: bind
+        source: ./docker/logs/php-apache
+        target: /usr/local/apache2/logs
+      - type: bind
+        source: ./www/local
+        target: /var/www/html/local
     ports:
-      - "8080:80"
+      - "80:80"
     networks:
       - net
 
@@ -34,6 +52,9 @@ services:
     build:
       context: ./docker/memcached
       dockerfile: Dockerfile
+    image: bitrix-memcached
+    container_name: bitrix-memcached
+    restart: "always"
     volumes:
       - ./docker/storage/memcached:/var/lib/memcached
     ports:
@@ -47,10 +68,11 @@ services:
     build:
       context: ./docker/redis
       dockerfile: Dockerfile
+    image: bitrix-redis
+    container_name: bitrix-redis
+    restart: "always"
     volumes:
       - ./docker/storage/redis:/data
-    # ports:
-    #   - "6379"
     networks:
       - net
 
