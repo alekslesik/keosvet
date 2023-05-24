@@ -10,6 +10,7 @@ services:
     restart: "always"
     volumes:
       - ./docker/storage/mysql:/var/lib/mysql/${MYSQL_DATABASE}
+      - ./settings/mysql/my.cnf:/etc/my.cnf
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -32,17 +33,18 @@ services:
     #   - mysql
     volumes:
       - type: bind
-        source: ./settings/httpd.conf
+        source: ./settings/apache/httpd.conf
         target: /usr/local/apache2/conf/httpd.conf
       - type: bind
-        source: ./settings/php.ini
-        target: /usr/local/etc/php/conf.d/php.ini
+        source: ./settings/php/
+        target: /usr/local/etc/php/conf.d/
       - type: bind
         source: ./docker/logs/php-apache
-        target: /usr/local/apache2/logs
-      - type: bind
-        source: ./www/local
-        target: /var/www/html/local
+        target: /var/log/apache2
+      # - type: bind
+      #   source: ./www/local
+      #   target: /var/www/html/local
+      - ./www/:/var/www/html:cached
     ports:
       - "80:80"
     networks:

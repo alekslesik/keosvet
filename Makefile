@@ -27,17 +27,17 @@ up: docker-up
 ## docker-up: Build images before starting containers; Create and start containers
 .PHONY: docker-up
 docker-up:
-	docker compose up --build -d
+	docker-compose up --build -d
 
 ## docker-down: Stop and remove containers, networks; Remove containers for services not defined in the Compose file.
 .PHONY: docker-down
 docker-down:
-	docker compose down --remove-orphans
+	docker-compose down --remove-orphans
 
 ## mysql-up: Build bitrix-mysql image before starting containers; Create and start containers
 .PHONY: mysql-up
 mysql-up:
-	docker compose up --build -d mysql
+	docker-compose up --build -d mysql
 
 ## mysql-exec: Start bin/sh in bitrix-mysql
 .PHONY: mysql-exec
@@ -47,7 +47,7 @@ mysql-exec:
 ## php-up: Build php-apache image before starting containers; Create and start containers
 .PHONY: php-up
 php-up:
-	docker compose up --build -d php-apache
+	docker-compose up --build -d php-apache
 
 ## php-exec: Start bin/sh in php-docker
 .PHONY: php-exec
