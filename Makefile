@@ -1,5 +1,5 @@
 # Include variables from the .envrc file
-#include .envrc
+include .env
 
 #=====================================#
 # HELPERS #
@@ -29,6 +29,16 @@ up: docker-up
 docker-up:
 	docker-compose up --build -d
 
+## docker-restart: Restart service containers
+.PHONY: docker-restart
+docker-restart:
+	docker compose restart
+
+## docker-stop: Stop service containers
+.PHONY: docker-stop
+docker-stop:
+	docker compose stop
+
 ## docker-down: Stop and remove containers, networks; Remove containers for services not defined in the Compose file.
 .PHONY: docker-down
 docker-down:
@@ -52,24 +62,24 @@ php-up:
 ## php-exec: Start bin/sh in php-docker
 .PHONY: php-exec
 php-exec:
-	docker container exec -it bitrix-php-apache sh
+	docker container exec -it php-apache sh
 
 bitrix-setup:
-	docker container exec bitrix-php-apache wget http://www.1c-bitrix.ru/download/scripts/bitrixsetup.php -O bitrixsetup.php
+	docker container exec bitrix-${PROJECT_NAME}-php-apache wget http://www.1c-bitrix.ru/download/scripts/bitrixsetup.php -O bitrixsetup.php
 	# make perm
 
 bitrix-restore-download:
-	docker container exec bitrix-php-apache wget $(url)
+	docker container exec bitrix-${PROJECT_NAME}-php-apache $(url)
 	make perm
 
 bitrix-restore: bitrix-restore-download
-	docker-compose exec bitrix-php-apache wget http://www.1c-bitrix.ru/download/scripts/restore.php -O restore.php
+	docker-compose exec bitrix-${PROJECT_NAME}-php-apache wget http://www.1c-bitrix.ru/download/scripts/restore.php -O restore.php
 	make perm
 
 composer:
 	docker-compose exec bitrix-php-apache composer install
 
 perm:
-	sudo chgrp -R ${USER} www
-	sudo chown -R ${USER}:${USER} www
-	sudo chmod -R ug+rwx www
+	chgrp -R root /var/www
+	chown -R root:root /var/www
+	chmod -R ug+rwx /var/www
