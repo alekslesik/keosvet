@@ -1,4 +1,4 @@
-version: '1'
+version: '3'
 
 services:
   mysql:
@@ -8,10 +8,10 @@ services:
     image: bitrix-${PROJECT_NAME}-mysql
     container_name: bitrix-${PROJECT_NAME}-mysql
     restart: "always"
-    volumes:
-      - ./settings/mysql/my.cnf:/etc/my.cnf
-      - ./docker/logs/mysql/mysqld.log:/var/log/mysqld.log
-      - ./docker/storage/mysql:/var/lib/mysql/${MYSQL_DATABASE}
+    # volumes:
+      # - ./settings/mysql/my.cnf:/etc/my.cnf
+      # - ./docker/logs/mysql/:/var/log/
+      # - ./docker/storage/mysql:/var/lib/mysql/${MYSQL_DATABASE}
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -20,7 +20,7 @@ services:
     ports:
       - "33061:3306"
     networks:
-      - net
+      - bitrix-net
 
   php-apache:
     build:
@@ -33,23 +33,13 @@ services:
     # depends_on: 
     #   - mysql
     volumes:
-      - type: bind
-        source: ./settings/apache/httpd.conf
-        target: /usr/local/apache2/conf/httpd.conf
-      - type: bind
-        source: ./settings/php/
-        target: /usr/local/etc/php/conf.d/
-      - type: bind
-        source: ./docker/logs/php-apache
-        target: /var/log/apache2
-      # - type: bind
-      #   source: ./www/local
-      #   target: /var/www/html/local
+      - ./settings/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./settings/php/:/usr/local/etc/php/conf.d/
       - ./www/:/var/www/html:cached
     ports:
-      - "80:80"
+      - "8080:80"
     networks:
-      - net
+      - bitrix-net
 
   memcached:
     build:
@@ -65,7 +55,7 @@ services:
     depends_on:
       - php-apache
     networks:
-      - net
+      - bitrix-net
 
   redis:
     build:
@@ -77,7 +67,7 @@ services:
     volumes:
       - ./docker/storage/redis:/data
     networks:
-      - net
+      - bitrix-net
 
 networks:
-  net:
+  bitrix-net:
