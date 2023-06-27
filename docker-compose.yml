@@ -8,10 +8,10 @@ services:
     image: bitrix-${PROJECT_NAME}-mysql
     container_name: bitrix-${PROJECT_NAME}-mysql
     restart: "always"
-    # volumes:
+    volumes:
       # - ./settings/mysql/my.cnf:/etc/my.cnf
       # - ./docker/logs/mysql/:/var/log/
-      # - ./docker/storage/mysql:/var/lib/mysql/${MYSQL_DATABASE}
+      - ./docker/storage/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
